@@ -30,8 +30,6 @@
         android:id="@+id/linkify_textview"
         android:layout_width="320dp"
         android:autoLink="none"
-        android:linksClickable="true"
-        android:textIsSelectable="true"
         android:text="@string/linkify_test_text"
         android:layout_height="wrap_content"
         android:textSize="20sp"

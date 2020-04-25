@@ -13,17 +13,19 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MyAppMainActivity";
 
-    private ExecutorService executorService;
+    private ListeningExecutorService executorService;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.linkify_button).setOnClickListener(view -> onLinkify());
         findViewById(R.id.reset_button).setOnClickListener(v -> onReset());
 
-        executorService = Executors.newSingleThreadExecutor();
+        executorService = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
     }
 
     @Override
@@ -65,21 +67,19 @@ public class MainActivity extends AppCompatActivity {
                         .build());
         TextLinks.Request textLinksRequest = builder.build();
 
-        Future<TextLinks> textLinksFuture = executorService.submit(
+        ListenableFuture<TextLinks> textLinksFuture = executorService.submit(
                 () -> textClassifier.generateLinks(textLinksRequest)
         );
-        try {
-            TextLinks textLinks = textLinksFuture.get();
-            int status = textLinks.apply(text, TextLinks.APPLY_STRATEGY_REPLACE, null);
-            textView.setLinksClickable(true);
-            textView.setTextIsSelectable(false);
-            textView.setMovementMethod(LinkMovementMethod.getInstance());
-            textView.setText(text);
-            textView.setFocusable(true);
-            textView.setFocusableInTouchMode(true);
-        } catch (ExecutionException | InterruptedException e) {
-            Log.e(TAG, "error generating links", e);
-        }
+        textLinksFuture.addListener(() -> runOnUiThread(() -> {
+            try {
+                TextLinks textLinks = textLinksFuture.get();
+                textLinks.apply(text, TextLinks.APPLY_STRATEGY_REPLACE, null);
+                textView.setMovementMethod(LinkMovementMethod.getInstance());
+                textView.setText(text);
+            } catch (ExecutionException | InterruptedException e) {
+                Log.e(TAG, "error generating links", e);
+            }
+        }), MoreExecutors.directExecutor());
     }
 
     void onReset() {
