@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">MyApp</string>
+
     <string name="linkify_button_name">Linkify</string>
     <string name="linkify_reset_button_name">Reset</string>
     <string name="linkify_test_text">Hi Mich, this is Chang from ABC Company. Our address is 123 4th
@@ -7,9 +8,21 @@
         chang@abc.com. We will have a party on Jun. 3rd and hope you can join. Additionally, my
         teammate Kiki will visit San Jose next Sunday and her flight number is FL 345. It would also
         be great if you can meet her there. For more questions, please visit google.com. </string>
+
     <string name="classify_button_name">Classify Text</string>
     <string name="classify_reset_button_name">Reset</string>
     <string name="classify_test_text"> (123)456–789 </string>
     <string name="classify_result_text"> Classify Action: </string>
     <string name="classify_action_button_default_name"> Unclassified </string>
+
+    <string name="detect_language_button_name">Detect Language</string>
+    <string name="detect_language_test_text">Hello world!</string>
+    <string name="detect_language_result_text">Detected Language: </string>
+
+    <string name="suggest_selection_title">Tap The Text Below</string>
+    <string name="suggest_selection_test_text">Hi Mich, this is Chang from ABC Company. Our address
+        is 123 4th Ave, New York, NY 12345. You can call us by (987) 654-321, or shot us an email to
+        chang@abc.com. We will have a party on Jun. 3rd and hope you can join. Additionally, my
+        teammate Kiki will visit San Jose next Sunday and her flight number is FL 345. It would also
+        be great if you can meet her there. For more questions, please visit google.com. </string>
 </resources>

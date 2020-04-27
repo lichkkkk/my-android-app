@@ -1,97 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp">
-
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
-        <Button
-            android:id="@+id/linkify_button"
-            android:layout_width="wrap_content"
+        <!-- Linkify -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/linkify_button_name" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/linkify_reset_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/linkify_reset_button_name" />
+            <Button
+                android:id="@+id/linkify_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/linkify_button_name" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/linkify_reset_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/linkify_reset_button_name" />
 
-    <TextView
-        android:id="@+id/linkify_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:autoLink="none"
-        android:text="@string/linkify_test_text"
-        android:textSize="20sp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/classify_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/classify_button_name" />
-
-        <Button
-            android:id="@+id/classify_reset_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/classify_reset_button_name" />
-
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/classify_input_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autoLink="none"
-        android:text="@string/classify_test_text"
-        android:textSize="20sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/classify_result_text"
+            android:id="@+id/linkify_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:autoLink="none"
+            android:text="@string/linkify_test_text"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Classify Text -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/classify_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/classify_button_name" />
+
+            <Button
+                android:id="@+id/classify_reset_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/classify_reset_button_name" />
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/classify_input_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="none"
+            android:text="@string/classify_test_text"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/classify_result_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/classify_result_text"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/classify_action_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/classify_action_button_default_name" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Detect Language -->
+
+        <Button
+            android:id="@+id/detect_language_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/detect_language_button_name" />
+
+        <EditText
+            android:id="@+id/detect_language_input_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="none"
+            android:text="@string/detect_language_test_text"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/detect_language_result_textview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:text="@string/classify_result_text"
+            android:text="@string/detect_language_result_text"
             android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/classify_action_button"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Suggest Selection -->
+        <TextView
+            android:id="@+id/suggest_selection_title_textview"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/classify_action_button_default_name" />
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/suggest_selection_title"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/suggest_selection_test_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/suggest_selection_test_text"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
+
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp" />
-
-</LinearLayout>
+</ScrollView>
