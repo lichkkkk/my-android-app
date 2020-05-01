@@ -153,5 +153,34 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp" />
 
+        <!-- Disable TextClassifier -->
+        <Button
+            android:id="@+id/disable_textclassifier_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/disable_textclassifier_button_name" />
+
+        <Button
+            android:id="@+id/enable_textclassifier_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/enable_textclassifier_button_name" />
+
+        <TextView
+            android:id="@+id/disable_textclassifier_test_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/disable_textclassifier_test_text"
+            android:textIsSelectable="true"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
+
     </LinearLayout>
 </ScrollView>

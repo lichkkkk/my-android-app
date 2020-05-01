@@ -79,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 return false; // Return false for other touch events
             }
         });
+        findViewById(R.id.disable_textclassifier_button).setOnClickListener(v -> onDisableTextClassifier());
+        findViewById(R.id.enable_textclassifier_button).setOnClickListener(v -> onEnableTextClassifier());
 
         executorService = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
     }
@@ -222,6 +224,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }, executorService);
         }
+    }
+
+    void onDisableTextClassifier() {
+        TextView textView = findViewById(R.id.disable_textclassifier_test_textview);
+        textView.setTextClassifier(TextClassifier.NO_OP);
+        findViewById(R.id.disable_textclassifier_button).setEnabled(false);
+        findViewById(R.id.enable_textclassifier_button).setEnabled(true);
+    }
+
+    void onEnableTextClassifier() {
+        TextView textView = findViewById(R.id.disable_textclassifier_test_textview);
+        textView.setTextClassifier(null);
+        findViewById(R.id.disable_textclassifier_button).setEnabled(true);
+        findViewById(R.id.enable_textclassifier_button).setEnabled(false);
     }
 
     // TODO: Add suggestConversationActions
