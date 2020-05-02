@@ -27,11 +27,16 @@
         be great if you can meet her there. For more questions, please visit google.com. </string>
 
     <string name="disable_textclassifier_button_name">Disable TextClassifier</string>
-    <string name="enable_textclassifier_button_name">Enable TextClassifier</string>
+    <string name="enable_default_textclassifier_button_name">Enable Default TextClassifier</string>
+    <string name="enable_custom_textclassifier_button_name">Enable Custom TextClassifier</string>
     <string name="disable_textclassifier_test_text">Hi Mich, this is Chang from ABC Company. Our
         address is 123 4th Ave, New York, NY 12345. You can call us by (987) 654-321, or shot us an
         email to chang@abc.com. We will have a party on Jun. 3rd and hope you can join.
         Additionally, my teammate Kiki will visit San Jose next Sunday and her flight number is
         FL 345. It would also be great if you can meet her there. For more questions, please visit
         google.com. </string>
+
+    <string name="suggest_conversation_action_button_name">Suggest Conversation Action</string>
+    <string name="suggest_conversation_action_test_text">Hi, can you call (123) 456 7890?</string>
+    <string name="suggested_conversation_action_button_default_name">Unknown Action</string>
 </resources>

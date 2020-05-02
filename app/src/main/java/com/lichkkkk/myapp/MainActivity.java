@@ -1,6 +1,8 @@
 package com.lichkkkk.myapp;
 
 import android.app.PendingIntent;
+import android.app.Person;
+import android.app.RemoteAction;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Layout;
@@ -11,25 +13,31 @@ import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.textclassifier.ConversationAction;
+import android.view.textclassifier.ConversationActions;
 import android.view.textclassifier.TextClassification;
 import android.view.textclassifier.TextClassificationManager;
 import android.view.textclassifier.TextClassifier;
+import android.view.textclassifier.TextClassifierEvent;
 import android.view.textclassifier.TextLanguage;
 import android.view.textclassifier.TextLinks;
 import android.view.textclassifier.TextSelection;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
@@ -80,7 +88,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         findViewById(R.id.disable_textclassifier_button).setOnClickListener(v -> onDisableTextClassifier());
-        findViewById(R.id.enable_textclassifier_button).setOnClickListener(v -> onEnableTextClassifier());
+        findViewById(R.id.enable_default_textclassifier_button).setOnClickListener(v -> onEnableDefaultTextClassifier());
+        findViewById(R.id.enable_custom_textclassifier_button).setOnClickListener(v -> onEnableCustomTextClassifier());
+        findViewById(R.id.suggest_conversation_action_button).setOnClickListener(v -> onSuggestConversationAction());
 
         executorService = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
     }
@@ -230,16 +240,105 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.disable_textclassifier_test_textview);
         textView.setTextClassifier(TextClassifier.NO_OP);
         findViewById(R.id.disable_textclassifier_button).setEnabled(false);
-        findViewById(R.id.enable_textclassifier_button).setEnabled(true);
+        findViewById(R.id.enable_default_textclassifier_button).setEnabled(true);
+        findViewById(R.id.enable_custom_textclassifier_button).setEnabled(true);
     }
 
-    void onEnableTextClassifier() {
+    void onEnableDefaultTextClassifier() {
         TextView textView = findViewById(R.id.disable_textclassifier_test_textview);
         textView.setTextClassifier(null);
         findViewById(R.id.disable_textclassifier_button).setEnabled(true);
-        findViewById(R.id.enable_textclassifier_button).setEnabled(false);
+        findViewById(R.id.enable_default_textclassifier_button).setEnabled(false);
+        findViewById(R.id.enable_custom_textclassifier_button).setEnabled(true);
     }
 
-    // TODO: Add suggestConversationActions
+    void onEnableCustomTextClassifier() {
+        TextClassifier customTextClassifier = new TextClassifier() {
+
+            @RequiresApi(api = Build.VERSION_CODES.Q)
+            @NonNull
+            @Override
+            public android.view.textclassifier.TextSelection suggestSelection(
+                    @NonNull android.view.textclassifier.TextSelection.Request request) {
+                TextClassifierEvent.TextSelectionEvent event =
+                        new TextClassifierEvent.TextSelectionEvent.Builder(
+                                TextClassifierEvent.TYPE_SELECTION_STARTED).build();
+                onTextClassifierEvent(event);
+                return TextClassifier.super.suggestSelection(request);
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.Q)
+            @Override
+            public void onTextClassifierEvent(@NonNull TextClassifierEvent event) {
+                Log.d(TAG, "onTextClassifierEvent");
+                runOnUiThread(() -> {
+                    Toast.makeText(
+                            getApplicationContext(), "event type: " + event.getEventType(), Toast.LENGTH_SHORT).show();
+                });
+            }
+        };
+        TextView textView = findViewById(R.id.disable_textclassifier_test_textview);
+        textView.setTextClassifier(customTextClassifier);
+        findViewById(R.id.disable_textclassifier_button).setEnabled(true);
+        findViewById(R.id.enable_default_textclassifier_button).setEnabled(true);
+        findViewById(R.id.enable_custom_textclassifier_button).setEnabled(false);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    void onSuggestConversationAction() {
+        TextView textView = findViewById(R.id.suggest_conversation_action_input_textview);
+        ConversationActions.Message message =
+                new ConversationActions.Message
+                        .Builder(new Person.Builder().build())
+                        .setText(textView.getText())
+                        .build();
+        ConversationActions.Request request =
+                new ConversationActions.Request
+                        .Builder(ImmutableList.of(message))
+                        .build();
+
+        TextClassificationManager textClassificationManager =
+                getSystemService(TextClassificationManager.class);
+        if (textClassificationManager == null) {
+            return;
+        }
+        TextClassifier textClassifier = textClassificationManager.getTextClassifier();
+        ListenableFuture<ConversationActions> conversationActionsFuture =
+                executorService.submit(() -> textClassifier.suggestConversationActions(request));
+        Futures.addCallback(conversationActionsFuture, new FutureCallback<ConversationActions>() {
+            @Override
+            public void onSuccess(@ParametersAreNonnullByDefault ConversationActions result) {
+                runOnUiThread(() -> {
+                    List<ConversationAction> actions = result.getConversationActions();
+                    if (actions.size() == 0) {
+                        Log.e(TAG, "no cov action");
+                        return;
+                    }
+                    RemoteAction remoteAction = actions.get(0).getAction();
+                    if (remoteAction == null) {
+                        Log.e(TAG, "null remote action");
+                        return;
+                    }
+                    Button button = findViewById(R.id.suggested_conversation_action_button);
+                    button.setText(remoteAction.getTitle());
+                    Toast.makeText(getApplicationContext(), remoteAction.getTitle(), Toast.LENGTH_SHORT);
+                    button.setOnClickListener(v -> {
+                        try {
+                            remoteAction.getActionIntent().send();
+                        } catch (PendingIntent.CanceledException e) {
+                            Log.e(TAG, "error sending intent");
+                        }
+                    });
+                });
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.e(TAG, "error suggesting conversation action", t);
+            }
+        }, MoreExecutors.directExecutor());
+
+    }
+
     // TODO: Add onTextClassifierEvent
 }
