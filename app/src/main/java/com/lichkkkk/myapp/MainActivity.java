@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     Button button = findViewById(R.id.suggested_conversation_action_button);
                     button.setText(remoteAction.getTitle());
-                    Toast.makeText(getApplicationContext(), remoteAction.getTitle(), Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), remoteAction.getTitle(), Toast.LENGTH_SHORT).show();
                     button.setOnClickListener(v -> {
                         try {
                             remoteAction.getActionIntent().send();
@@ -339,6 +339,4 @@ public class MainActivity extends AppCompatActivity {
         }, MoreExecutors.directExecutor());
 
     }
-
-    // TODO: Add onTextClassifierEvent
 }
