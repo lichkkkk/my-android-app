@@ -3,6 +3,7 @@ package com.lichkkkk.myapp;
 import android.app.PendingIntent;
 import android.app.Person;
 import android.app.RemoteAction;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Layout;
@@ -37,8 +38,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -101,33 +104,59 @@ public class MainActivity extends AppCompatActivity {
         executorService.shutdown();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    void onLinkify() {
-        TextClassificationManager textClassificationManager =
-                getSystemService(TextClassificationManager.class);
-        if (textClassificationManager == null) {
+    private static void asyncLinkify(Context context, TextView textView, Executor bgExecutor) {
+        TextClassificationManager tcm = context.getSystemService(TextClassificationManager.class);
+        if (tcm == null) return;
+        TextClassifier textClassifier = tcm.getTextClassifier();
+
+        CharSequence textToLinkify = textView.getText();
+        if (textToLinkify.length() > textClassifier.getMaxGenerateLinksTextLength()) {
             return;
         }
-        TextClassifier textClassifier = textClassificationManager.getTextClassifier();
-        TextView textView = findViewById(R.id.linkify_textview);
-        // textClassifier = textView.getTextClassifier();
-        // Linkify.addLinks(textView, Linkify.ALL);
-        CharSequence textViewCharSequence = textView.getText();
-        SpannableString text = new SpannableString(textViewCharSequence);
-        TextLinks.Request textLinksRequest = new TextLinks.Request.Builder(text).build();
-        ListenableFuture<TextLinks> textLinksFuture = executorService.submit(
-                () -> textClassifier.generateLinks(textLinksRequest)
-        );
-        textLinksFuture.addListener(() -> runOnUiThread(() -> {
-            try {
-                TextLinks textLinks = textLinksFuture.get();
-                textLinks.apply(text, TextLinks.APPLY_STRATEGY_REPLACE, null);
-                textView.setMovementMethod(LinkMovementMethod.getInstance());
-                textView.setText(text);
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "error generating links", e);
+        TextLinks.Request request = new TextLinks.Request.Builder(textToLinkify).build();
+        Reference<TextView> textViewRef = new WeakReference<>(textView);
+        bgExecutor.execute(() -> {
+            TextView textView1 = textViewRef.get();
+            if (textView1 == null) return;
+            TextLinks textLinks = textClassifier.generateLinks(request);
+            SpannableString text = new SpannableString(textView1.getText());
+            textLinks.apply(text, TextLinks.APPLY_STRATEGY_IGNORE, null);
+            textView1.post(() -> {
+                TextView textView2 = textViewRef.get();
+                if (textView2 == null) return;
+                textView2.setMovementMethod(LinkMovementMethod.getInstance());
+                textView2.setText(text);
+            });
+        });
+    }
+
+    private static void asyncClassify(Context context, Button button, CharSequence text, Executor bgExecutor) {
+        TextClassificationManager tcm = context.getSystemService(TextClassificationManager.class);
+        if (tcm == null) return;
+        TextClassifier textClassifier = tcm.getTextClassifier();
+
+        TextClassification.Request request = new TextClassification.Request.Builder(text, 0, text.length() - 1).build();
+        Reference<Button> buttonRef = new WeakReference<>(button);
+        bgExecutor.execute(() -> {
+            Button button1 = buttonRef.get();
+            if (button1 == null) return;
+            TextClassification textClassification = textClassifier.classifyText(request);
+            if (textClassification.getEntityCount() == 0 || textClassification.getActions().size() == 0) {
+                return;
             }
-        }), MoreExecutors.directExecutor());
+            button1.post(() -> {
+                Button button2 = buttonRef.get();
+                if (button2 == null) return;
+                button2.setText(textClassification.getEntity(0));
+                button2.setOnClickListener(v -> {
+                    try {
+                        textClassification.getActions().get(0).getActionIntent().send();
+                    } catch (PendingIntent.CanceledException e) {
+                        Log.e(TAG, "error sending intent");
+                    }
+                });
+            });
+        });
     }
 
     void onLinkifyReset() {
@@ -135,35 +164,15 @@ public class MainActivity extends AppCompatActivity {
         textView.setText(R.string.linkify_test_text);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    void onLinkify() {
+        asyncLinkify(getApplicationContext(), findViewById(R.id.linkify_textview), executorService);
+    }
+
     void onClassify() {
         TextView inputTextView = findViewById(R.id.classify_input_textview);
-        TextClassifier textClassifier = inputTextView.getTextClassifier();
-        CharSequence inputText = inputTextView.getText();
-        TextClassification.Request request = new TextClassification.Request.Builder(
-                inputText, 0, inputText.length() - 1
-        ).build();
-        ListenableFuture<TextClassification> textClassificationFuture = executorService.submit(
-                () -> textClassifier.classifyText(request)
-        );
-        textClassificationFuture.addListener(() -> runOnUiThread(() -> {
-            try {
-                TextClassification textClassification = textClassificationFuture.get();
-                if (textClassification.getEntityCount() == 0) {
-                    return;
-                }
-                Button classifiedActionButton = findViewById(R.id.classify_action_button);
-                classifiedActionButton.setText(textClassification.getEntity(0));
-                classifiedActionButton.setOnClickListener(v -> {
-                    try {
-                        textClassification.getActions().get(0).getActionIntent().send();
-                    } catch (PendingIntent.CanceledException e) {
-                        Log.e(TAG, "error sending intent");
-                    }
-                });
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "error classifying text", e);
-            }
-        }), MoreExecutors.directExecutor());
+        Button classifiedActionButton = findViewById(R.id.classify_action_button);
+        asyncClassify(getApplicationContext(), classifiedActionButton, inputTextView.getText(), executorService);
     }
 
     void onClassifyReset() {
@@ -271,10 +280,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextClassifierEvent(@NonNull TextClassifierEvent event) {
                 Log.d(TAG, "onTextClassifierEvent");
-                runOnUiThread(() -> {
-                    Toast.makeText(
-                            getApplicationContext(), "event type: " + event.getEventType(), Toast.LENGTH_SHORT).show();
-                });
+                runOnUiThread(() -> Toast.makeText(
+                        getApplicationContext(), "event type: " + event.getEventType(), Toast.LENGTH_SHORT).show());
             }
         };
         TextView textView = findViewById(R.id.disable_textclassifier_test_textview);
@@ -337,6 +344,5 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "error suggesting conversation action", t);
             }
         }, MoreExecutors.directExecutor());
-
     }
 }
