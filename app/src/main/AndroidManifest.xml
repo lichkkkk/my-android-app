@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".TextClassifierDemoActivity"></activity>
+        <activity android:name=".BookReaderDemoActivity"></activity>
     </application>
 
 </manifest>

@@ -7,6 +7,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -14,9 +15,15 @@
 
         <Button
             android:id="@+id/open_text_classifier_demo_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@+string/open text classifier demo" />
+            android:text="@string/open_text_classifier_demo_btn_name" />
+
+        <Button
+            android:id="@+id/open_book_reader_demo_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/open_book_reader_demo_btn_name" />
 
     </LinearLayout>
 

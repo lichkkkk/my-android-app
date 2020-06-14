@@ -13,7 +13,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        findViewById(R.id.open_text_classifier_demo_btn).setOnClickListener(v -> onOpenTextClassifierDemo());
+        findViewById(R.id.open_text_classifier_demo_btn)
+                .setOnClickListener(v -> onOpenTextClassifierDemo());
+        findViewById(R.id.open_book_reader_demo_btn)
+                .setOnClickListener(v -> onOpenBookReaderDemo());
+    }
+
+    private void onOpenBookReaderDemo() {
+        Intent intent = new Intent(this, BookReaderDemoActivity.class);
+        startActivity(intent);
     }
 
     private void onOpenTextClassifierDemo() {

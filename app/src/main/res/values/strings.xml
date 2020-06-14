@@ -1,6 +1,17 @@
 <resources>
     <string name="app_name">MyApp</string>
 
+    <!--  Below is for Main Activity -->
+    <string name="open_book_reader_demo_btn_name">Open Book Reader Demo</string>
+    <string name="open_text_classifier_demo_btn_name">Open TextClassifier Demo</string>
+
+    <!-- Below is for Book Reader Demo Activity -->
+    <string name="book_reader_default_text">Click Next Page To Start</string>
+    <string name="next_page_btn_name">Next Page</string>
+    <string name="last_page_btn_name">Last Page</string>
+
+
+    <!--  Below is for Text Classifier Demo Activity -->
     <string name="linkify_button_name">Linkify</string>
     <string name="linkify_reset_button_name">Reset</string>
     <string name="linkify_test_text">Hi Mich, this is Chang from ABC Company. Our address is 123 4th
