@@ -45,4 +45,7 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
     implementation 'org.tensorflow:tensorflow-lite-gpu:0.0.0-nightly'
     implementation 'org.tensorflow:tensorflow-lite-support:0.0.0-nightly'
+
+    // Import Cronet dependency
+    implementation 'com.google.android.gms:play-services-cronet:17.0.0'
 }

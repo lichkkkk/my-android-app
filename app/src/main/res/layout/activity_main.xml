@@ -25,6 +25,12 @@
             android:layout_height="wrap_content"
             android:text="@string/open_book_reader_demo_btn_name" />
 
+        <Button
+            android:id="@+id/open_downloader_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/open_downloader_btn_name" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

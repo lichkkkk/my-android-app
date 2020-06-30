@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
                 .setOnClickListener(v -> onOpenTextClassifierDemo());
         findViewById(R.id.open_book_reader_demo_btn)
                 .setOnClickListener(v -> onOpenBookReaderDemo());
+        findViewById(R.id.open_downloader_btn)
+                .setOnClickListener(v -> onOpenDownloader());
     }
 
     private void onOpenBookReaderDemo() {
@@ -26,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void onOpenTextClassifierDemo() {
         Intent intent = new Intent(this, TextClassifierDemoActivity.class);
+        startActivity(intent);
+    }
+
+    private void onOpenDownloader() {
+        Intent intent = new Intent(this, DownloaderActivity.class);
         startActivity(intent);
     }
 }

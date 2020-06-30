@@ -4,12 +4,15 @@
     <!--  Below is for Main Activity -->
     <string name="open_book_reader_demo_btn_name">Open Book Reader Demo</string>
     <string name="open_text_classifier_demo_btn_name">Open TextClassifier Demo</string>
+    <string name="open_downloader_btn_name">Open Downloader</string>
+
+    <!-- Below is for Downloader -->
+    <string name="downloader_default_url">https://raw.githubusercontent.com/lichkkkk/my-android-app/master/README.md</string>
 
     <!-- Below is for Book Reader Demo Activity -->
     <string name="book_reader_default_text">Click Next Page To Start</string>
     <string name="next_page_btn_name">Next Page</string>
     <string name="last_page_btn_name">Last Page</string>
-
 
     <!--  Below is for Text Classifier Demo Activity -->
     <string name="linkify_button_name">Linkify</string>
