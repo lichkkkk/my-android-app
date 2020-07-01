@@ -9,21 +9,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/downloader_default_url"
-        app:layout_constraintBottom_toTopOf="@+id/downloader_download_button"
+        app:layout_constraintBottom_toTopOf="@+id/downloader_download_with_dm_button"
         app:layout_constraintTop_toTopOf="parent"></EditText>
 
     <Button
-        android:id="@+id/downloader_download_button"
+        android:id="@+id/downloader_download_with_dm_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Download"
-        app:layout_constraintBottom_toTopOf="@+id/downloader_files_textview"
+        android:text="Download with DM"
+        app:layout_constraintBottom_toTopOf="@+id/downloader_download_with_cronet_button"
         app:layout_constraintTop_toBottomOf="@+id/downloader_url_textview"></Button>
+
+    <Button
+        android:id="@+id/downloader_download_with_cronet_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Download with Cronet"
+        app:layout_constraintBottom_toTopOf="@+id/downloader_url_textview"
+        app:layout_constraintTop_toBottomOf="@+id/downloader_download_with_dm_button"></Button>
 
     <TextView
         android:id="@+id/downloader_files_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/downloader_download_button"></TextView>
+        app:layout_constraintTop_toBottomOf="@+id/downloader_download_with_cronet_button"></TextView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

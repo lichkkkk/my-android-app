@@ -8,6 +8,7 @@
 
     <!-- Below is for Downloader -->
     <string name="downloader_default_url">https://raw.githubusercontent.com/lichkkkk/my-android-app/master/README.md</string>
+    <string name="downloader_model_url">https://www.gstatic.com/android/text_classifier/q/v709/en.fb</string>
 
     <!-- Below is for Book Reader Demo Activity -->
     <string name="book_reader_default_text">Click Next Page To Start</string>
